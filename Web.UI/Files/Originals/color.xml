@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="iconbar">#333</color>
+    <color name="main_color">{{mainColor}}</color>
+    <color name="button_start_color">#37474F</color>
+    <color name="button_end_color">#777e93</color>
+    <color name="black">#000</color>
+    <color name="white">#FFF</color>
+</resources>

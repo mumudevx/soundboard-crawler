@@ -1,0 +1,48 @@
+<resources>
+
+    <string name="app_name">{{soundboardName}}</string>
+    <string name="package_name">{{packageName}}</string>
+
+    <!--Ad-->
+    <string name="unity_game_id">{{unityGameId}}</string>
+    <item type="bool" name="unity_test_mode">false</item>
+    <item type="bool" name="unity_enable_load">false</item>
+    <string name="unity_banner_placement">{{unityBannerName}}</string>
+    <string name="unity_interstitial_placement">{{unityInterstitialName}}</string>
+    <string name="interstitial_ad_frequency_tab">{{tabAdFrequency}}</string>
+    <string name="interstitial_ad_frequency_sound">{{soundAdFrequency}}</string>
+
+    <!--Tab names-->
+    {{tabNames}}
+
+    <!--Share app-->
+    <string name="playstore_link">https://play.google.com/store/apps/details?id={{packageName}}</string>
+    <string name="share_text">Get the</string>
+    <string name="share_via">Share via...</string>
+
+    <!--Sidebar titles-->
+    <string name="menu_title_sound">Sounds</string>
+    <string name="menu_title_share">Share app</string>
+
+    <!--Long click at sound-->
+    <string name="share_sound_title">Share sound</string>
+    <string name="set_tone_as_title">Set tone as...</string>
+    <string name="share_sound_via">Share sound via...</string>
+    <string name="ringtone_title">Ringtone</string>
+    <string name="notification_title">Notification</string>
+    <string name="alarm_title">Alarm tone</string>
+
+    <!--Permission-->
+    <string name="notice_that_app_needs_access_to_settings">The app needs access to your settings</string>
+
+    <!--This is where the sounds are saved if you share or save one-->
+    <string name="foldername">{{soundFolderName}}</string>
+
+    <!-- Rate Application Strings -->
+    <string name="rate_dialog_title">Rate this app</string>
+    <string name="rate_dialog_message">If you enjoy with this app, would you mind taking a moment to rate it? It won\'t take more than a minute. Thanks for your support!</string>
+    <string name="rate_dialog_ok">Rate It</string>
+    <string name="rate_dialog_cancel">Remind Me Later</string>
+    <string name="rate_dialog_no">No</string>
+
+</resources>

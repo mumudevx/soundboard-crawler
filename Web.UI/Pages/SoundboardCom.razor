@@ -1,0 +1,135 @@
+﻿@page "/soundboardcom"
+@inject ISoundService SoundManager
+@inject ISoundboardComService SoundboardManager
+
+@if (_showSpinner)
+{
+    <div class="row">
+        <div class="col-12">
+            <Spinner />
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-6">
+        <EditForm Model="@_downloadSoundboardViewModel" OnValidSubmit="async () => await StartProgress()">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label for="soundboardUrl">Soundboard Url</label>
+
+                <input @bind="_downloadSoundboardViewModel.SoundboardUrl"
+                       id="soundboardUrl"
+                       class="form-control"
+                       aria-describedby="soundboardUrlHelp"
+                       placeholder="Enter Soundboard Url..." />
+
+                <small id="soundboardUrlHelp" class="form-text text-muted">Enter the soundboard url from soundboard.com website.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="soundboardName">Soundboard Name</label>
+
+                <input @bind="_downloadSoundboardViewModel.SoundboardName"
+                       id="soundboardName"
+                       class="form-control"
+                       aria-describedby="soundboardNameHelp"
+                       placeholder="Enter Soundboard Name..." />
+
+                <small id="soundboardNameHelp" class="form-text text-muted">Enter the soundboard name.</small>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary" type="submit">Start Task</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+<div class="row mt-5">
+    @if (_soundboard?.Sounds != null)
+    {
+        <div class="col-12 mb-5">
+            <a class="btn btn-success" href="@_soundboard.ZipLink" target="_blank">
+                <i class="oi oi-cloud-download"></i>
+                Download Sounds
+            </a>
+
+            <button class="btn btn-danger" @onclick="RemoveSoundboard">
+                <i class="oi oi-delete"></i>
+                Remove Sounds From Server
+            </button>
+        </div>
+
+        <div class="col-12">
+            <h3>Sound Titles</h3>
+            <ul>
+                @foreach (var sound in _soundboard.Sounds)
+                {
+                    if (_soundboard.Sounds.Last() == sound)
+                    {
+                        <li>"@sound.Title"</li>
+                    }
+                    else
+                    {
+                        <li>"@sound.Title",</li>
+                    }
+                }
+            </ul>
+        </div>
+
+        <div class="col-12">
+            <h3>Sound Raws</h3>
+            <ul>
+                @foreach (var sound in _soundboard.Sounds)
+                {
+                    @if (_soundboard.Sounds.Last() == sound)
+                    {
+                        <li>@sound.Raw</li>
+                    }
+                    else
+                    {
+                        <li>@sound.Raw,</li>
+                    }
+                }
+            </ul>
+        </div>
+    }
+</div>
+
+
+@code{
+    private DownloadSoundboardViewModel _downloadSoundboardViewModel = new DownloadSoundboardViewModel();
+
+    private Soundboard _soundboard;
+    private bool _showSpinner;
+
+    private async Task StartProgress()
+    {
+        ShowSpinner();
+        await DownloadSoundboard();
+    }
+
+    private async Task DownloadSoundboard()
+    {
+        if (string.IsNullOrWhiteSpace(_downloadSoundboardViewModel.SoundboardUrl) || string.IsNullOrEmpty(_downloadSoundboardViewModel.SoundboardName)) return;
+
+        _soundboard = await SoundboardManager.DownloadSounds(_downloadSoundboardViewModel.SoundboardUrl, _downloadSoundboardViewModel.SoundboardName);
+        _showSpinner = false;
+
+        StateHasChanged();
+    }
+
+    private void RemoveSoundboard()
+    {
+        SoundManager.RemoveSoundboardFromServer(_soundboard.ZipPath);
+    }
+
+    private void ShowSpinner()
+    {
+        _showSpinner = true;
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,278 @@
+﻿@page "/realmofdarknessnet"
+@inject ISoundService _soundManager
+@inject IRealmOfDarknessNetService _soundboardManager
+
+@if (_showSpinner)
+{
+    <div class="row">
+        <div class="col-12">
+            <Spinner/>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-6">
+        <EditForm Model="@_downloadSoundboardViewModel" OnValidSubmit="async () => await StartProgress()">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+
+            <div class="form-group">
+                <label for="soundboardUrl">Soundboard Url</label>
+
+                <input @bind="_downloadSoundboardViewModel.SoundboardUrl"
+                       id="soundboardUrl"
+                       class="form-control"
+                       aria-describedby="soundboardUrlHelp"
+                       placeholder="Enter Soundboard Url..."/>
+
+                <small id="soundboardUrlHelp" class="form-text text-muted">Enter the soundboard url from soundboard.com website.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="soundboardName">Soundboard Name</label>
+
+                <input @bind="_downloadSoundboardViewModel.SoundboardName"
+                       id="soundboardName"
+                       class="form-control"
+                       aria-describedby="soundboardNameHelp"
+                       placeholder="Enter Soundboard Name..."/>
+
+                <small id="soundboardNameHelp" class="form-text text-muted">Enter the soundboard name.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="packageName">Package Name</label>
+
+                <input @bind="_downloadSoundboardViewModel.PackageName"
+                       id="packageName"
+                       class="form-control"
+                       aria-describedby="packageNameHelp"
+                       placeholder="Enter Package Name..."/>
+
+                <small id="packageNameHelp" class="form-text text-muted">Enter the package name. Example: com.dev.app</small>
+            </div>
+
+            <div class="form-group">
+                <label for="soundsPerTab">Sounds Per Tab</label>
+
+                <input @bind="_downloadSoundboardViewModel.SoundsPerTab"
+                       type="number"
+                       id="soundsPerTab"
+                       class="form-control"
+                       aria-describedby="soundsPerTabHelp"
+                       placeholder="Enter Sound Amount Per Tab"/>
+
+                <small id="soundsPerTabHelp" class="form-text text-muted">Enter the amount of sounds for per tab.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="mainColor">Main Color</label>
+
+                <input @bind="_downloadSoundboardViewModel.MainColor"
+                       type="color"
+                       id="mainColor"
+                       class="form-control"
+                       aria-describedby="mainColorHelp"
+                       placeholder="Select Main Color"/>
+
+                <small id="mainColorHelp" class="form-text text-muted">Select main color from picker.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="unityGameId">Unity Game Id</label>
+
+                <input @bind="_downloadSoundboardViewModel.UnityGameId"
+                       id="unityGameId"
+                       class="form-control"
+                       placeholder="Enter Unity Game Id..."/>
+            </div>
+
+            <div class="form-group">
+                <label for="unityBannerName">Unity Banner Name</label>
+
+                <input @bind="_downloadSoundboardViewModel.UnityBannerName"
+                       id="unityBannerName"
+                       class="form-control"
+                       placeholder="Enter Unity Banner Name..."/>
+            </div>
+
+            <div class="form-group">
+                <label for="unityInterstitialName">Unity Interstitial Name</label>
+
+                <input @bind="_downloadSoundboardViewModel.UnityInterstitialName"
+                       id="unityInterstitialName"
+                       class="form-control"
+                       placeholder="Enter Unity Interstitial Name..."/>
+            </div>
+
+            <div class="form-group">
+                <label for="tabAdFrequency">Tab Ads Frequency</label>
+
+                <input @bind="_downloadSoundboardViewModel.TabAdFrequency"
+                       type="number"
+                       id="tabAdFrequency"
+                       class="form-control"
+                       placeholder="Enter Tab Ad Frequency..."/>
+            </div>
+
+            <div class="form-group">
+                <label for="soundAdFrequency">Sound Play Ads Frequency</label>
+
+                <input @bind="_downloadSoundboardViewModel.SoundAdFrequency"
+                       type="number"
+                       id="soundAdFrequency"
+                       class="form-control"
+                       placeholder="Enter Sound Play Ads Frequency..."/>
+            </div>
+
+            <div class="form-group">
+                <label for="soundFolderName">Sound Folder Name</label>
+
+                <input @bind="_downloadSoundboardViewModel.SoundFolderName"
+                       id="soundFolderName"
+                       class="form-control"
+                       placeholder="Enter Sound Folder Name..."/>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-primary" type="submit">Start Task</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+<div class="row mt-5">
+    @if (_soundboard?.Sounds != null)
+    {
+        <div class="col-12 mb-5">
+            <a class="btn btn-success" href="@_soundboard.ZipLink" target="_blank">
+                <i class="oi oi-cloud-download"></i>
+                Download Sounds
+            </a>
+
+            <button class="btn btn-danger" @onclick="RemoveSoundboard">
+                <i class="oi oi-delete"></i>
+                Remove Sounds From Server
+            </button>
+        </div>
+
+        <div class="col-12">
+            <h3>Sound Titles</h3>
+            <ul>
+                @foreach (var sound in _soundboard.Sounds)
+                {
+                    if (_soundboard.Sounds.Last() == sound)
+                    {
+                        <li>"@sound.Title"</li>
+                    }
+                    else
+                    {
+                        <li>"@sound.Title",</li>
+                    }
+                }
+            </ul>
+        </div>
+
+        <div class="col-12">
+            <h3>Sound Raws</h3>
+            <ul>
+                @foreach (var sound in _soundboard.Sounds)
+                {
+                    @if (_soundboard.Sounds.Last() == sound)
+                    {
+                        <li>@sound.Raw</li>
+                    }
+                    else
+                    {
+                        <li>@sound.Raw,</li>
+                    }
+                }
+            </ul>
+        </div>
+    }
+</div>
+
+
+@code{
+    private readonly DownloadSoundboardViewModel _downloadSoundboardViewModel = new DownloadSoundboardViewModel();
+
+    private Soundboard _soundboard;
+    private bool _showSpinner;
+
+    private async Task StartProgress()
+    {
+        ShowSpinner();
+        await DownloadSoundboard();
+    }
+
+    private async Task DownloadSoundboard()
+    {
+        if (string.IsNullOrWhiteSpace(_downloadSoundboardViewModel.SoundboardUrl) || string.IsNullOrEmpty(_downloadSoundboardViewModel.SoundboardName)) return;
+
+        _soundboard = await _soundboardManager.DownloadSounds(_downloadSoundboardViewModel.SoundboardUrl, _downloadSoundboardViewModel.SoundboardName);
+        _showSpinner = false;
+
+        var soundStrings = _soundboard.Sounds.Select(s => s.Title).ToList();
+        var soundPaths = _soundboard.Sounds.Select(s => s.Raw).ToList();
+
+        await FileTest(
+            _downloadSoundboardViewModel.SoundboardName,
+            _downloadSoundboardViewModel.PackageName,
+            _downloadSoundboardViewModel.UnityGameId,
+            _downloadSoundboardViewModel.UnityBannerName,
+            _downloadSoundboardViewModel.UnityInterstitialName,
+            _downloadSoundboardViewModel.TabAdFrequency,
+            _downloadSoundboardViewModel.SoundAdFrequency,
+            _downloadSoundboardViewModel.SoundFolderName,
+            _downloadSoundboardViewModel.SoundsPerTab,
+            _downloadSoundboardViewModel.MainColor,
+            soundStrings,
+            soundPaths);
+
+        StateHasChanged();
+    }
+
+    private void RemoveSoundboard()
+    {
+        _soundManager.RemoveSoundboardFromServer(_soundboard.ZipPath);
+    }
+
+    private void ShowSpinner()
+    {
+        _showSpinner = true;
+        StateHasChanged();
+    }
+
+    private async Task FileTest
+        (
+        string soundboardName,
+        string packageName,
+        string unityGameId,
+        string unityBannerName,
+        string unityInterstitialName,
+        string tabAdFrequency,
+        string soundAdFrequency,
+        string soundFolderName,
+        int soundsPerTab,
+        string mainColor,
+        ICollection<string> soundStrings,
+        ICollection<string> soundPaths
+        )
+    {
+        await JavaFileGenerator.StartAutomation(
+            soundboardName,
+            packageName,
+            unityGameId,
+            unityBannerName,
+            unityInterstitialName,
+            tabAdFrequency,
+            soundAdFrequency,
+            soundFolderName,
+            soundsPerTab,
+            mainColor,
+            soundStrings,
+            soundPaths);
+    }
+
+}
